@@ -1,0 +1,78 @@
+
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
+plugins {
+    id 'java'
+    id 'idea'
+    id "io.freefair.lombok" version "5.1.0"
+    id "io.spring.dependency-management" version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '2.4.5' apply false
+//    id 'com.jfrog.artifactory' version "$jFrogArtifactoryVersion" apply false
+//    id 'org.openapi.generator' version "$openApiGeneratorVersion" apply false
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://packages.confluent.io/maven/'
+    }
+    maven {
+        url = uri("https://jitpack.io")
+    }
+}
+
+generateLombokConfig.enabled = false
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'io.freefair.lombok'
+    apply plugin: 'io.spring.dependency-management'
+
+    group = 'com.yotpo.finaltaskmanagement'
+    version '1.0-SNAPSHOT'
+
+    dependencyManagement {
+        imports {
+            mavenBom SpringBootPlugin.BOM_COORDINATES
+            mavenBom "org.testcontainers:testcontainers-bom:${testContainersVersion}"
+        }
+    }
+
+    repositories {
+        mavenCentral()
+        maven {
+            url 'https://packages.confluent.io/maven/'
+        }
+        maven {
+            url = uri("https://jitpack.io")
+        }
+    }
+
+    generateLombokConfig.enabled = false
+
+    dependencies {
+
+        testImplementation('org.springframework.boot:spring-boot-starter-test') {
+            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        }
+
+//        // OpenApi and Swagger generator
+//        implementation "io.swagger:swagger-annotations:${swaggerVersion}"
+//        implementation "org.openapitools:jackson-databind-nullable:${jacksonDatabindNullableVersion}"
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
+
+
+
+
+
+
+
+
+

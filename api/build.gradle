@@ -1,0 +1,30 @@
+plugins {
+}
+
+apply plugin: 'org.springframework.boot'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    implementation "javax.persistence:javax.persistence-api"
+
+    implementation project(":core")
+}
+
+test {
+    useJUnitPlatform()
+}
