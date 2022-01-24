@@ -43,9 +43,7 @@ public class TaskConverter {
                 .assignee(assigneeConverter.assigneeFromJSONObject(obj.getJSONObject("assignee")))
                 .due_date(LocalDate.parse(obj.getString("due_date")))
                 .build();
-
     }
-
 
     public String toTaskResponse(Task task){
         System.out.println(assigneeConverter.toAssigneeResponse(task.getAssignee()));
