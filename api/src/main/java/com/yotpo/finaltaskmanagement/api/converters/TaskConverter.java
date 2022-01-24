@@ -36,12 +36,11 @@ public class TaskConverter {
     }
 
     public Task taskFromJSONObject(JSONObject obj) throws JSONException {
+        System.out.println("assignee: "+ obj.getJSONObject("assignee").toString());
         return Task.builder()
-                .task_id(obj.getLong("task_id"))
                 .title(obj.getString("title"))
                 .status(obj.getString("status"))
                 .assignee(assigneeConverter.assigneeFromJSONObject(obj.getJSONObject("assignee")))
-//                .assignee(assigneeService.get(obj.getLong("assignee")))
                 .due_date(LocalDate.parse(obj.getString("due_date")))
                 .build();
 
@@ -49,12 +48,14 @@ public class TaskConverter {
 
 
     public String toTaskResponse(Task task){
+        System.out.println(assigneeConverter.toAssigneeResponse(task.getAssignee()));
         try{
             return new JSONObject()
+                    .put("title", task.getTitle())
                     .put("task_id", task.getTask_id())
                     .put("status", task.getStatus())
-                    .put("assignee", assigneeConverter.toAssigneeResponse(task.getAssignee()))
-                    .put("due_date", task.getDue_date().toString())
+                    .put("assignee", assigneeConverter.JSONObjectFromAssignee(task.getAssignee()))
+                    .put("due_date", task.getDue_date())
                     .toString();
 
         } catch (JSONException e) {
@@ -64,8 +65,8 @@ public class TaskConverter {
     }
 
 
-    public List<String> toTasksResponse(List<Task> tasks){
-        return tasks.stream().map(this::toTaskResponse).collect(Collectors.toList());
+    public String toTasksResponse(List<Task> tasks){
+        return tasks.stream().map(this::toTaskResponse).collect(Collectors.toList()).toString();
     }
 
 

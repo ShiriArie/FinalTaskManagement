@@ -1,7 +1,9 @@
 package com.yotpo.finaltaskmanagement.api.controllers;
 
 import com.yotpo.finaltaskmanagement.api.converters.AssigneeConverter;
+import com.yotpo.finaltaskmanagement.api.converters.TaskConverter;
 import com.yotpo.finaltaskmanagement.core.entities.Assignee;
+import com.yotpo.finaltaskmanagement.core.entities.Task;
 import com.yotpo.finaltaskmanagement.core.services.AssigneeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ public class AssigneeController {
     private AssigneeConverter assigneeConverter;
     @Autowired
     private AssigneeService assigneeService;
+    @Autowired
+    private TaskConverter taskConverter;
 
     @PostMapping()
     @RequestMapping("/add")
@@ -49,11 +53,16 @@ public class AssigneeController {
 
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> delete(@PathVariable("id") Long id) {
-        assigneeService.delete(id);
-        return ResponseEntity.status(HttpStatus.FOUND).body("Assignee with id:" + id + " has removed");
+//    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+//    public ResponseEntity<String> delete(@PathVariable("id") Long id) {
+//        assigneeService.delete(id);
+//        return ResponseEntity.status(HttpStatus.FOUND).body("Assignee with id:" + id + " has removed");
+//    }
+
+    @RequestMapping("getTasksById/{id}")
+    public ResponseEntity<String> getTasks(@PathVariable Long id) {
+        List<Task> tasks = assigneeService.get(id).getTasks();
+        return ResponseEntity.status(HttpStatus.CREATED).body(taskConverter.toTasksResponse(tasks));
+
     }
-
-
 }

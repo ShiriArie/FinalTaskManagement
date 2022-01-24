@@ -6,7 +6,7 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Entity(name = "tasks")
+@Entity(name= "tasks")
 @SuperBuilder
 public class Task {
     @Id
@@ -24,16 +24,16 @@ public class Task {
     public Task() {
     }
 
-    @Override
-    public String toString() {
-        return "Task{" +
-                "task_id=" + task_id +
-                ", title='" + title + '\'' +
-                ", status='" + status + '\'' +
-                ", due_date=" + due_date +
-                ", assignee=" + assignee +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Task{" +
+//                "task_id=" + task_id +
+//                ", title='" + title + '\'' +
+//                ", status='" + status + '\'' +
+//                ", due_date=" + due_date +
+//                ", assignee=" + assignee +
+//                '}';
+//    }
 
     public Long getTask_id() {
         return task_id;

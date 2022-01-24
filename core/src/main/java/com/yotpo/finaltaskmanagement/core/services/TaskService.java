@@ -1,9 +1,13 @@
 package com.yotpo.finaltaskmanagement.core.services;
 
+import com.yotpo.finaltaskmanagement.core.entities.Assignee;
 import com.yotpo.finaltaskmanagement.core.entities.Task;
+import com.yotpo.finaltaskmanagement.core.exceptions.AssigneeNotFoundException;
+import com.yotpo.finaltaskmanagement.core.exceptions.TaskNotFoundException;
 import com.yotpo.finaltaskmanagement.core.repositories.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +21,7 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
+
     public Task create(Task task) {
         return taskRepository.save(task);
     }
@@ -25,6 +30,15 @@ public class TaskService {
 
     public void delete(Long id) {
         taskRepository.deleteById(id);
+    }
+
+    public Task get(Long id) { return taskRepository.findById(id)
+            .orElseThrow(() -> new TaskNotFoundException(id)); }
+
+    public Task update(Long id, Task task) {
+        Task existingTask = get(id);
+        BeanUtils.copyProperties(task, existingTask, "task_id");
+        return taskRepository.save(existingTask);
     }
 
 
