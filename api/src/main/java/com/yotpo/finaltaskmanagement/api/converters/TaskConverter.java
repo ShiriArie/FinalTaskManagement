@@ -58,7 +58,7 @@ public class TaskConverter {
 
         } catch (JSONException e) {
             e.printStackTrace();
-            return "Failed to create JSON from Task";
+            return "Failed to create JSON from  Task";
         }
     }
 
