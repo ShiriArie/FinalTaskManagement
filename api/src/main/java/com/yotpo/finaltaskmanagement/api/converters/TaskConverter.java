@@ -1,6 +1,7 @@
 package com.yotpo.finaltaskmanagement.api.converters;
 
 import com.yotpo.finaltaskmanagement.core.entities.Task;
+import com.yotpo.finaltaskmanagement.core.services.AssigneeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.r2dbc.ConnectionFactoryBuilder;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 public class TaskConverter {
     @Autowired
     private AssigneeConverter assigneeConverter;
+    @Autowired
+    private AssigneeService assigneeService;
 
     public Task taskFromRequest(RequestEntity<String> request) throws JSONException {
         return (taskFromJSONObject(new JSONObject(request.getBody())));
@@ -38,6 +41,7 @@ public class TaskConverter {
                 .title(obj.getString("title"))
                 .status(obj.getString("status"))
                 .assignee(assigneeConverter.assigneeFromJSONObject(obj.getJSONObject("assignee")))
+//                .assignee(assigneeService.get(obj.getLong("assignee")))
                 .due_date(LocalDate.parse(obj.getString("due_date")))
                 .build();
 

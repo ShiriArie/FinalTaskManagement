@@ -11,9 +11,8 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Optional;
+
 
 
 @RequiredArgsConstructor
@@ -36,27 +35,25 @@ public class AssigneeController {
     @GetMapping()
     @RequestMapping("/getAll")
     public ResponseEntity<String> getAll(){
+        System.out.println("Hi Im inside getAll");
         List<Assignee> assignees = assigneeService.list();
         return ResponseEntity.status(HttpStatus.FOUND).body(assigneeConverter.toAssigneesResponse(assignees));
     }
 
-//todo
-    @GetMapping()
+
     @RequestMapping("/{id}")
     public ResponseEntity<String> get(@PathVariable Long id) {
-        System.out.println("Hi Im inside get id");
-        Optional<Assignee> opAssignee = assigneeService.get(id);
-        Assignee assignee = assigneeConverter.assigneeFromOptional(opAssignee);
+        System.out.println("Hi Im inside get id " + id);
+        Assignee assignee = assigneeService.get(id);
         return ResponseEntity.status(HttpStatus.CREATED).body(assigneeConverter.toAssigneeResponse(assignee));
+
     }
 
-//    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-//    public ResponseEntity<String> delete(@PathVariable("id") Long id) {
-//        System.out.println("assigne id is=" + id);
-//        assigneeService.deleteById(id);
-//        return ResponseEntity.status(HttpStatus.FOUND).body("Deleted");
-//    }
-
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> delete(@PathVariable("id") Long id) {
+        assigneeService.delete(id);
+        return ResponseEntity.status(HttpStatus.FOUND).body("Assignee with id:" + id + " has removed");
+    }
 
 
 }

@@ -52,10 +52,7 @@ public class AssigneeConverter {
         return assignees.stream().map(this::toAssigneeResponse).collect(Collectors.toList()).toString();
     }
 
-    public Assignee assigneeFromOptional(Optional<Assignee> opAssignee) {
-        System.out.println(opAssignee.get());
-        return opAssignee.get();
-    }
+
 
 
 

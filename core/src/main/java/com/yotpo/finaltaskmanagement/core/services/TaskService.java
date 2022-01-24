@@ -1,5 +1,6 @@
 package com.yotpo.finaltaskmanagement.core.services;
 
+import com.yotpo.finaltaskmanagement.core.entities.Task;
 import com.yotpo.finaltaskmanagement.core.repositories.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -15,6 +16,16 @@ import java.util.List;
 public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
+
+    public Task create(Task task) {
+        return taskRepository.save(task);
+    }
+
+    public List<Task> list() { return (List<Task>) taskRepository.findAll(); }
+
+    public void delete(Long id) {
+        taskRepository.deleteById(id);
+    }
 
 
 
