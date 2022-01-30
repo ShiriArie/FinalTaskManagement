@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+  app:
+    container_name: app
+    image: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    depends_on:
+      - mysql
+
+  mysql:
+    container_name: mysql
+    image: mysql/mysql-server
+    environment:
+      - MYSQL_ROOT_PASSWORD=shiripass
+      - MYSQL_DATABASE=task
+      - MYSQL_USER=springuser
+      - MYSQL_PASSWORD=Shiri
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

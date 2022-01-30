@@ -4,9 +4,9 @@ import com.yotpo.finaltaskmanagement.core.entities.Task;
 import com.yotpo.finaltaskmanagement.core.services.AssigneeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.r2dbc.ConnectionFactoryBuilder;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
 
@@ -61,7 +61,6 @@ public class TaskConverter {
             return "Failed to create JSON from  Task";
         }
     }
-
 
     public String toTasksResponse(List<Task> tasks){
         return tasks.stream().map(this::toTaskResponse).collect(Collectors.toList()).toString();

@@ -3,6 +3,7 @@ plugins {
 
 apply plugin: 'org.springframework.boot'
 
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -21,8 +22,10 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     implementation "javax.persistence:javax.persistence-api"
-
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation group: 'org.json', name: 'json', version: '20211205'
     implementation project(":core")
+    implementation 'org.springframework.retry:spring-retry:1.2.4.RELEASE'
 }
 
 test {
