@@ -1,0 +1,42 @@
+TaskRequest:
+  type: object
+  properties:
+    task:
+      type: object
+      properties:
+        title:
+          type: string
+        due_date:
+          type: string
+          format: date
+        status:
+          type: string
+        assignee:
+          $ref: 'assigneesComponents.yaml#/AssigneeRequest'
+
+TaskResponse:
+  type: object
+  properties:
+    task:
+      type: object
+      properties:
+        task_id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        due_date:
+          type: string
+          format: date
+        status:
+          type: string
+        assignee:
+          $ref: 'assigneesComponents.yaml#/AssigneeResponse'
+
+TasksResponse:
+  type: object
+  properties:
+    tasks:
+      type: array
+      items:
+        $ref: '#/TaskResponse'

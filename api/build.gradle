@@ -1,7 +1,14 @@
 plugins {
+    id 'org.openapi.generator'
 }
 
 apply plugin: 'org.springframework.boot'
+
+ext {
+    group = 'com.yotpo.finaltaskmanagement'
+    generateServerLocation = "$buildDir/generated/server"
+}
+
 
 
 configurations {
@@ -13,6 +20,47 @@ configurations {
 repositories {
     mavenCentral()
 }
+
+sourceSets {
+    main {
+        java {
+            srcDirs "$generateServerLocation/src/main/java/"
+        }
+    }
+}
+
+// https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-gradle-plugin
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$projectDir/openApi/service.yaml"
+    outputDir = "$generateServerLocation"
+    apiPackage = "${group}.api.generated"
+    invokerPackage = "${group}.api.generated.invoker"
+    modelPackage = "${group}.api.generated.model"
+//    modelNameSuffix = "Dto"
+
+    // config options "documentation": https://openapi-generator.tech/docs/generators/spring
+    configOptions = [
+            dateLibrary            : "java8-localdatetime",
+            hideGenerationTimestamp: "true",
+            interfaceOnly          : "true",
+            unhandledException     : "true",
+            useTags                : "true"
+    ]
+}
+
+task generateFullSchemaFile(type: Exec) {
+    commandLine "$rootDir/scripts/combine_openapi_files.sh", "$rootDir"
+}
+compileJava.dependsOn tasks.generateFullSchemaFile
+
+compileJava.dependsOn tasks.openApiGenerate
+
+task cleanAutoGenerateFiles(type: Delete) {
+    delete "$generateServerLocation"
+}
+tasks.openApiGenerate.dependsOn tasks.cleanAutoGenerateFiles
+
 
 dependencies {
     // Web

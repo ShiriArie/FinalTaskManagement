@@ -1,0 +1,31 @@
+openapi: 3.0.0
+info:
+  title: Tasks service
+  description: Tasks service
+  version: 1.0
+
+servers:
+  - url: http://localhost:8080
+    description: Local server for debugging
+
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+
+security:
+  - bearer: []
+
+paths:
+  /tasks:
+    $ref: 'tasksRequests.yaml#/tasks'
+  /tasks/{task_id}:
+    $ref: 'tasksRequests.yaml#/task'
+  /assignees:
+    $ref: 'assigneesRequests.yaml#/assignees'
+  /assignees/{assignee_id}:
+    $ref: 'assigneesRequests.yaml#/assignee'
+  /assigneeTasks/{assignee_id}:
+    $ref: 'assigneesRequests.yaml#/assigneeTasks'
+

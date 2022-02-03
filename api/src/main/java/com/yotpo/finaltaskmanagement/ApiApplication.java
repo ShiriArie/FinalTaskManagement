@@ -34,4 +34,6 @@ public class ApiApplication {
                     .forEach(it -> it.setDependsOn("databaseStartupValidator"));
         };
     }
+
+
 }

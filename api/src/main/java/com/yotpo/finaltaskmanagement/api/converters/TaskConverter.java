@@ -1,5 +1,6 @@
 package com.yotpo.finaltaskmanagement.api.converters;
 
+import com.yotpo.finaltaskmanagement.api.generated.model.*;
 import com.yotpo.finaltaskmanagement.core.entities.Task;
 import com.yotpo.finaltaskmanagement.core.services.AssigneeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,54 +18,41 @@ import java.util.stream.Collectors;
 
 @Component
 public class TaskConverter {
+
     @Autowired
     private AssigneeConverter assigneeConverter;
-    @Autowired
-    private AssigneeService assigneeService;
 
-    public Task taskFromRequest(RequestEntity<String> request) throws JSONException {
-        return (taskFromJSONObject(new JSONObject(request.getBody())));
-    }
-
-    public List<Task> tasksFromRequest(RequestEntity<String> request) throws JSONException {
-        JSONArray objs = new JSONArray(request.getBody());
-        List<Task> tasks= new ArrayList<>();
-        for (int i=0; i< objs.length(); i++){
-            tasks.add(taskFromJSONObject(objs.getJSONObject(i)));
-        }
-        return tasks;
-    }
-
-    public Task taskFromJSONObject(JSONObject obj) throws JSONException {
-        System.out.println("assignee: "+ obj.getJSONObject("assignee").toString());
+    public Task taskFromRequest(TaskRequest taskRequest) {
+        TaskRequestTask task = taskRequest.getTask();
         return Task.builder()
-                .title(obj.getString("title"))
-                .status(obj.getString("status"))
-                .assignee(assigneeConverter.assigneeFromJSONObject(obj.getJSONObject("assignee")))
-                .due_date(LocalDate.parse(obj.getString("due_date")))
+                .title(task.getTitle())
+                .due_date(task.getDueDate())
+                .status(task.getStatus())
+                .assignee(assigneeConverter.assigneeFromRequest(task.getAssignee()))
                 .build();
+
     }
 
-    public String toTaskResponse(Task task){
-        System.out.println(assigneeConverter.toAssigneeResponse(task.getAssignee()));
-        try{
-            return new JSONObject()
-                    .put("title", task.getTitle())
-                    .put("task_id", task.getTask_id())
-                    .put("status", task.getStatus())
-                    .put("assignee", assigneeConverter.JSONObjectFromAssignee(task.getAssignee()))
-                    .put("due_date", task.getDue_date())
-                    .toString();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return "Failed to create JSON from  Task";
-        }
+    public TaskResponse toTaskResponse(Task task){
+        TaskResponseTask taskResponseTask = new TaskResponseTask();
+        taskResponseTask.setTitle(task.getTitle());
+        taskResponseTask.setStatus(task.getStatus());
+        taskResponseTask.setTaskId(task.getTask_id());
+        taskResponseTask.setDueDate(task.getDue_date());
+        taskResponseTask.setAssignee(assigneeConverter.toAssigneeResponse(task.getAssignee()));
+        TaskResponse taskResponse = new TaskResponse();
+        taskResponse.setTask(taskResponseTask);
+        return taskResponse;
     }
 
-    public String toTasksResponse(List<Task> tasks){
-        return tasks.stream().map(this::toTaskResponse).collect(Collectors.toList()).toString();
-    }
+    public TasksResponse toTasksResponse(List<Task> tasks){
+        List<TaskResponse> taskResponses = tasks.stream().map(
+                this::toTaskResponse
+        ).collect(Collectors.toList());
 
+        TasksResponse response = new TasksResponse();
+        response.setTasks(taskResponses);
+        return response;
+    }
 
 }

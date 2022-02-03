@@ -1,0 +1,33 @@
+AssigneeRequest:
+  type: object
+  properties:
+    assignee:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+
+AssigneeResponse:
+  type: object
+  properties:
+    assignee:
+      type: object
+      properties:
+        assignee_id:
+          type: integer
+          format: int64
+        first_name:
+          type: string
+        last_name:
+          type: string
+
+
+AssigneesResponse:
+  type: object
+  properties:
+    assignees:
+      type: array
+      items:
+        $ref: '#/AssigneeResponse'

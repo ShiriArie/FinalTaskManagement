@@ -1,5 +1,6 @@
 package com.yotpo.finaltaskmanagement.api.converters;
 
+import com.yotpo.finaltaskmanagement.api.generated.model.*;
 import com.yotpo.finaltaskmanagement.core.entities.Assignee;
 import com.yotpo.finaltaskmanagement.core.entities.Task;
 import com.yotpo.finaltaskmanagement.core.services.AssigneeService;
@@ -20,61 +21,40 @@ import java.util.stream.Collectors;
 public class AssigneeConverter {
 
     @Autowired
-    private TaskConverter taskConverter;
-    @Autowired
     private AssigneeService assigneeService;
 
-    public Assignee assigneeFromRequest(RequestEntity<String> request) throws JSONException {
-        return (assigneeFromJSONObject(new JSONObject(request.getBody())));
-    }
-
-    public Assignee assigneeFromJSONObject(JSONObject obj) throws JSONException {
-        if (obj.has("assignee_id")){
-            Assignee assignee = assigneeService.get(obj.getLong("assignee_id"));
-            return assignee;
+    public Assignee assigneeFromRequest(AssigneeRequest assigneeRequest) {
+        AssigneeRequestAssignee assignee = assigneeRequest.getAssignee();
+        Assignee existingAssignee = assigneeService.getByFirstNameAndLastName(assignee.getFirstName(),assignee.getLastName());
+        if (existingAssignee != null){
+            return existingAssignee;
         }
         else{
-            Assignee assignee = Assignee.builder()
-                    .first_name(obj.getString("first_name"))
-                    .last_name(obj.getString("last_name"))
+            Assignee newAssignee = Assignee.builder()
+                    .first_name(assignee.getFirstName())
+                    .last_name(assignee.getLastName())
                     .build();
-            assigneeService.create(assignee);
-            return assignee;
+            return assigneeService.create(newAssignee);
         }
     }
 
-    public JSONObject JSONObjectFromAssignee(Assignee assignee) {
-        try{
-            return new JSONObject()
-                    .put("assignee_id", assignee.getAssignee_id())
-                    .put("first_name", assignee.getFirst_name())
-                    .put("last_name", assignee.getLast_name());
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-
+    public AssigneeResponse toAssigneeResponse(Assignee assignee){
+        AssigneeResponseAssignee assigneeResponseAssignee = new AssigneeResponseAssignee();
+        assigneeResponseAssignee.setAssigneeId(assignee.getAssignee_id());
+        assigneeResponseAssignee.setFirstName(assignee.getFirst_name());
+        assigneeResponseAssignee.setLastName(assignee.getLast_name());
+        AssigneeResponse assigneeResponse = new AssigneeResponse();
+        assigneeResponse.setAssignee(assigneeResponseAssignee);
+        return assigneeResponse;
     }
 
-    public String toAssigneeResponse(Assignee assignee){
-        try{
-            return new JSONObject()
-                    .put("assignee_id", assignee.getAssignee_id())
-                    .put("first_name", assignee.getFirst_name())
-                    .put("last_name", assignee.getLast_name())
-//                    .put("tasks", assignee.getTasks())
-                    .toString();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return "Failed to create JSON from Assignee";
-        }
-    }
-
-    public String toAssigneesResponse(List<Assignee> assignees){
-        return assignees.stream().map(this::toAssigneeResponse).collect(Collectors.toList()).toString();
+    public AssigneesResponse toAssigneesResponse(List<Assignee> assignees) {
+        List<AssigneeResponse> assigneeResponses = assignees.stream().map(
+                this::toAssigneeResponse
+        ).collect(Collectors.toList());
+        AssigneesResponse response = new AssigneesResponse();
+        response.setAssignees(assigneeResponses);
+        return response;
     }
 
 

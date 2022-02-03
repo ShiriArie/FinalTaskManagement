@@ -2,6 +2,8 @@ package com.yotpo.finaltaskmanagement.api.controllers;
 
 import com.yotpo.finaltaskmanagement.api.converters.AssigneeConverter;
 import com.yotpo.finaltaskmanagement.api.converters.TaskConverter;
+import com.yotpo.finaltaskmanagement.api.generated.AssigneesApi;
+import com.yotpo.finaltaskmanagement.api.generated.model.*;
 import com.yotpo.finaltaskmanagement.core.entities.Assignee;
 import com.yotpo.finaltaskmanagement.core.entities.Task;
 import com.yotpo.finaltaskmanagement.core.services.AssigneeService;
@@ -19,8 +21,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/assignees")
-public class AssigneeController {
+public class AssigneeController implements AssigneesApi {
     @Autowired
     private AssigneeConverter assigneeConverter;
     @Autowired
@@ -28,41 +29,38 @@ public class AssigneeController {
     @Autowired
     private TaskConverter taskConverter;
 
-    @PostMapping()
-    @RequestMapping("/add")
-    public ResponseEntity<String> create(RequestEntity<String> assigneeRequest) throws JSONException {
-        System.out.println("Hi Im inside add");
+
+    @Override
+    public ResponseEntity<AssigneeResponse> create(AssigneeRequest assigneeRequest) {
         Assignee newAssignee = assigneeService.create(assigneeConverter.assigneeFromRequest(assigneeRequest));
-        return ResponseEntity.status(HttpStatus.CREATED).body(assigneeConverter.toAssigneeResponse(newAssignee));
+        AssigneeResponse assigneeResponse = assigneeConverter.toAssigneeResponse(newAssignee);
+        return ResponseEntity.status(HttpStatus.CREATED).body(assigneeResponse);
     }
 
-    @GetMapping()
-    @RequestMapping("/getAll")
-    public ResponseEntity<String> getAll(){
-        System.out.println("Hi Im inside getAll");
+    @Override
+    public ResponseEntity<AssigneesResponse> index() {
         List<Assignee> assignees = assigneeService.list();
-        return ResponseEntity.status(HttpStatus.FOUND).body(assigneeConverter.toAssigneesResponse(assignees));
+        AssigneesResponse assigneesResponse = assigneeConverter.toAssigneesResponse(assignees);
+        return ResponseEntity.ok(assigneesResponse);
     }
 
-
-    @RequestMapping("/{id}")
-    public ResponseEntity<String> get(@PathVariable Long id) {
-        System.out.println("Hi Im inside get id " + id);
-        Assignee assignee = assigneeService.get(id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(assigneeConverter.toAssigneeResponse(assignee));
-
+    @Override
+    public ResponseEntity<AssigneeResponse> findById(Long assigneeId) {
+        Assignee assignee = assigneeService.get(assigneeId);
+        AssigneeResponse assigneeResponse = assigneeConverter.toAssigneeResponse(assignee);
+        return ResponseEntity.ok(assigneeResponse);
     }
 
-//    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-//    public ResponseEntity<String> delete(@PathVariable("id") Long id) {
-//        assigneeService.delete(id);
-//        return ResponseEntity.status(HttpStatus.FOUND).body("Assignee with id:" + id + " has removed");
-//    }
-
-    @RequestMapping("getTasksById/{id}")
-    public ResponseEntity<String> getTasks(@PathVariable Long id) {
-        List<Task> tasks = assigneeService.get(id).getTasks();
-        return ResponseEntity.status(HttpStatus.CREATED).body(taskConverter.toTasksResponse(tasks));
-
+    @Override
+    public ResponseEntity<Void> delete(Long id) {
+        assigneeService.delete(id);
+        return ResponseEntity.ok().build();
     }
+
+    @Override
+    public ResponseEntity<TasksResponse> getAllTasks(Long assigneeId) {
+        List<Task> assigneeTasks = assigneeService.get(assigneeId).getTasks();
+        return ResponseEntity.ok(taskConverter.toTasksResponse(assigneeTasks));
+    }
+
 }

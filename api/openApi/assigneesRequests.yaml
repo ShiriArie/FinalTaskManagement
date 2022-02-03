@@ -1,0 +1,135 @@
+assignee:
+  get:
+    summary: Get assignee by internal id
+    tags:
+      - assignees
+    operationId: findById
+    parameters:
+      - in: path
+        name: assignee_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: The assignee id
+    responses:
+      200:
+        description: Assignee
+        content:
+          application/json:
+            schema:
+              $ref: 'assigneesComponents.yaml#/AssigneeResponse'
+      400:
+        description: The request contains illegal argument/s
+      401:
+        description: Access token is missing or invalid
+      404:
+        description: Assignee was not found
+  put:
+    summary: Updating existing assignee
+    operationId: update
+    tags:
+      - assignees
+    parameters:
+      - in: path
+        name: assignee_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: The assignee id
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: 'assigneesComponents.yaml#/AssigneeRequest'
+    responses:
+      200:
+        description: The updated assignee
+        content:
+          application/json:
+            schema:
+              $ref: 'assigneesComponents.yaml#/AssigneeResponse'
+      404:
+        description: Not found
+  delete:
+    summary: Delete assignee by id
+    operationId: delete
+    tags:
+      - assignees
+    parameters:
+      - in: path
+        name: assignee_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: The assignee id
+    responses:
+      200:
+        description: The assignee was deleted
+      404:
+        description: Not found
+
+assignees:
+  get:
+    summary: Get all assignees
+    operationId: index
+    tags:
+      - assignees
+    responses:
+      200:
+        description: The requested assignee
+        content:
+          application/json:
+            schema:
+              $ref: 'assigneesComponents.yaml#/AssigneesResponse'
+      404:
+        description: Not found
+  post:
+    summary: Create a new assignee
+    operationId: create
+    tags:
+      - assignees
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: 'assigneesComponents.yaml#/AssigneeRequest'
+    responses:
+      200:
+        description: The create assignee
+        content:
+          application/json:
+            schema:
+              $ref: 'assigneesComponents.yaml#/AssigneeResponse'
+
+assigneeTasks:
+  get:
+    summary: Get all assignee's tasks by id
+    operationId: getAllTasks
+    tags:
+      - assignees
+    parameters:
+      - in: path
+        name: assignee_id
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: The assignee id
+    responses:
+      200:
+        description: The requested tasks of assignee
+        content:
+          application/json:
+            schema:
+              $ref: 'tasksComponents.yaml#/TasksResponse'
+      400:
+        description: The request contains illegal argument/s
+      401:
+        description: Access token is missing or invalid
+      404:
+        description: Not found

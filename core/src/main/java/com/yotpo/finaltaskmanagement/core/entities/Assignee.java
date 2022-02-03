@@ -20,15 +20,6 @@ public class Assignee {
     public Assignee() {
     }
 
-    public Map<String, String> ToMap(Assignee assignee) {
-        Map<String, String> assigneeMap = new HashMap<>();
-        assigneeMap.put("assignee_id", assignee.assignee_id.toString());
-        assigneeMap.put("first_name", assignee.first_name);
-        assigneeMap.put("last_name", assignee.last_name);
-        return assigneeMap;
-    }
-
-
 
     public List<Task> getTasks() {
         return tasks;
@@ -61,4 +52,5 @@ public class Assignee {
     public void setLast_name(String last_name) {
         this.last_name = last_name;
     }
+
 }
